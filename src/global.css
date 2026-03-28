@@ -1,0 +1,369 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
+.home-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dark immersive overlay — aligned with reffer code marketing-hero.css .hero-overlay */
+.home-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 20%,
+      rgba(15, 23, 42, 0.25) 0%,
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.15) 0%,
+      rgba(15, 23, 42, 0.1) 40%,
+      rgba(15, 23, 42, 0.55) 72%,
+      #0f172a 100%
+    );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.home-hero__content {
+  position: relative;
+  z-index: 2;
+}
+
+.about-bg__content {
+  position: relative;
+  z-index: 2;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* CV dialog — obvious scrollbars + touch scrolling (mobile PDF preview) */
+.cv-pdf-scroll {
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+  scrollbar-color: #64748b #e2e8f0;
+}
+
+.cv-pdf-scroll::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+.cv-pdf-scroll::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 8px;
+}
+
+.cv-pdf-scroll::-webkit-scrollbar-thumb {
+  background: #64748b;
+  border-radius: 8px;
+  border: 3px solid #e2e8f0;
+}
+
+.cv-pdf-scroll::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Scroll-in — bidirectional reveal (aligned with reffer code marketing-shared.css .reveal-up) */
+.animate-in-scroll {
+  opacity: 0;
+  transform: translateY(44px);
+  transition:
+    opacity 0.75s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.animate-in-scroll.animate-in-scroll-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/*
+ * Interactive cards — aligned with reffer code/src/styles/marketing-features.css
+ * (.feature-card, lines 18–44): overflow hidden, 3px top bar, scaleX slide,
+ * 0.45s bar transition, 0.4s card transition, translateY(-6px) + shadow on hover.
+ * Colours: green gradient (#79c72c → #4c9141) instead of var(--accent-lg).
+ */
+.card-interactive {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-interactive::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #79c72c 0%, #4c9141 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Same as reference: radius-xl on top only (matches Tailwind rounded-3xl = 1.5rem) */
+  border-radius: 1.5rem 1.5rem 0 0;
+  pointer-events: none;
+}
+
+.card-interactive:hover::after {
+  transform: scaleX(1);
+}
+
+.card-interactive:hover {
+  transform: translateY(-6px);
+  border-color: rgb(167 243 208);
+  /* Reference uses var(--shadow-lg) ≈ 0 12px 40px rgba(0,0,0,0.1) */
+  box-shadow:
+    0 12px 40px rgba(15, 23, 42, 0.1),
+    0 4px 16px rgba(121, 199, 44, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-interactive:hover {
+    transform: none;
+  }
+  .card-interactive,
+  .card-interactive::after {
+    transition-duration: 0.01ms;
+  }
+  .animate-in-scroll {
+    transition-duration: 0.01ms;
+    will-change: auto;
+  }
+}
+
+/* Client cards — load-in via AnimatedOnScroll; 3D flip on hover/focus (Team reference) */
+.client-flip-card {
+  perspective: 1000px;
+  min-height: 260px;
+  outline: none;
+}
+.client-flip-card:focus-visible {
+  border-radius: 1.5rem;
+  box-shadow: 0 0 0 2px rgb(15 23 42), 0 0 0 4px rgb(121 199 44 / 0.45);
+}
+.client-flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.client-flip-card:hover .client-flip-card-inner,
+.client-flip-card:focus-within .client-flip-card-inner {
+  transform: rotateY(180deg);
+}
+.client-flip-front,
+.client-flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+.client-flip-front {
+  display: flex;
+  flex-direction: column;
+  transition:
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.client-flip-front::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #79c72c 0%, #4c9141 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1.5rem 1.5rem 0 0;
+  pointer-events: none;
+}
+.client-flip-card:hover .client-flip-front::after,
+.client-flip-card:focus-within .client-flip-front::after {
+  transform: scaleX(1);
+}
+.client-flip-card:hover .client-flip-front,
+.client-flip-card:focus-within .client-flip-front {
+  border-color: rgb(167 243 208);
+  box-shadow:
+    0 12px 40px rgba(15, 23, 42, 0.1),
+    0 4px 16px rgba(121, 199, 44, 0.12);
+}
+.client-flip-back {
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.75rem;
+  background: linear-gradient(135deg, rgb(15 23 42) 0%, rgb(30 41 59) 100%);
+  border: 1px solid rgb(51 65 85);
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .client-flip-card:hover .client-flip-card-inner,
+  .client-flip-card:focus-within .client-flip-card-inner {
+    transform: none;
+  }
+  .client-flip-card-inner {
+    transform-style: flat;
+    min-height: 0;
+    gap: 0.75rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .client-flip-front,
+  .client-flip-back {
+    position: relative;
+    inset: auto;
+    transform: none !important;
+    backface-visibility: visible;
+    min-height: 0;
+  }
+  .client-flip-back {
+    border-radius: 1.5rem;
+  }
+}
+
+/* Tech rail — infinite horizontal scroll, edge fades, pill items (site theme) */
+.tech-rail {
+  --tech-rail-bg: #020817;
+  --tech-rail-accent: #79c72c;
+  padding: 4.5rem 0;
+  background: var(--tech-rail-bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.tech-rail__container {
+  margin: 0 auto 2.2rem;
+  max-width: 72rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.tech-rail-header {
+  text-align: center;
+}
+
+.tech-rail-eyebrow {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: rgba(121, 199, 44, 0.12);
+  color: var(--tech-rail-accent);
+}
+
+.tech-rail-title {
+  margin-top: 0.5rem;
+  font-size: clamp(1.7rem, 3.4vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f9fafb;
+}
+
+.tech-rail::before,
+.tech-rail::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 160px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.tech-rail::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--tech-rail-bg), transparent);
+}
+
+.tech-rail::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--tech-rail-bg), transparent);
+}
+
+.tech-rail-track {
+  display: flex;
+  gap: 1rem;
+  width: fit-content;
+  animation: techScroll 180s linear infinite;
+}
+
+@keyframes techScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.tech-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.3rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: border-color 0.1s, background 0.1s;
+}
+
+.tech-item:hover {
+  border-color: rgba(121, 199, 44, 0.4);
+  background: rgba(121, 199, 44, 0.08);
+}
+
+.tech-item-dot {
+  fill: var(--tech-rail-accent);
+  opacity: 0.75;
+}
+
+.tech-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
